@@ -60,8 +60,8 @@ final = almost[len(almost)/2:]
 #Okay, now I have to get into funny strings and stuff to make it look good
 
 newex = expo*2
-
-if final[0] != 0: result = "{0}x^{1}".format(final[0],newex)
+result = ''
+if final[0] != 0: result += "{0}x^{1}".format(final[0],newex)
 
 for i in range(1, len(final)-1):
     curex = newex - i
