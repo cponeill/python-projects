@@ -11,3 +11,24 @@
 #Usage:
 #rpi-mailindicator.py -u GMAIL-ADDRESS -p GMAIL-PASSWORD
 #optional arguments: -r RED_LIGHT_PIN -y YELLOW_LIGHT_PIN -g GREEN_LIGHT_PIN
+
+import sys, imaplib
+import RPi.GPIO as g
+
+red_pin, yellow_pin, green_pin = 2, 3, 4
+
+if '-u' not in sys.argv:
+  print "You must supply a username!"
+  exit(1)
+  
+if '-p' not in sys.argv:
+  print "You must supply a password!"
+  exit(1)
+  
+for i in sys.argv:
+  if sys.argv[i] == "-u": USERNAME = sys.argv[i+1]
+  if sys.argv[i] == "-p": PASSWORD = sys.argv[i+1]
+  if sys.argv[i] == "-r": red_pin = int(sys.argv[i+1])
+  if sys.argv[i] == "-y": yellow_pin = int(sys.argv[i+1])
+  if sys.argv[i] == "-g": green_pin = int(sys.argv[i+1])
+  
