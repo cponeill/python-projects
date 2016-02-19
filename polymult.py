@@ -71,6 +71,7 @@ if final[-1] != 0: result += " + {0}".format(final[-1])
 
 #Made things look better by removing terms with 0 coefficients. However, this could lead to a leading " + ". Let's get rid of that.
 if final[0] == 0: result = result[3:]
+if fianl[-1] == 0: result = result[:-3]
 
 print "Your result is: "
 print result
