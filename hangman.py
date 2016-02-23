@@ -99,7 +99,7 @@ if difficulty == 3:
     answer = hard[n]
 
 for i in range(0,len(answer)):
-    if answer[i] in alphabet: working += "_"
+    if answer[i].lower() in alphabet: working += "_"
     else: working += " "
 
 while True:
