@@ -1,19 +1,28 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 #Copyright 2016
 #Python Hangman game
-#Pretty simple, allows difficulties, but uses predetermined wordlists
-#Planned feature: pick words at random from online dictionary and
-#compare length to difficulty level
+#Assumes you are using a Linux system and you have a dictionary at /usr/share/dict/words
+#Works in Python 2.x as well as 3.x
 
 import random, sys
-if sys.version_info >= (3,0):
+if sys.version_info >= (3,0):#Forwards compatibility :P
     raw_input = input
 
 alphabet = "abcdefghijklmnopqrstuvwxyz"
 used = ""
 working = ""
-easy = ["Apple","Orange","Blue","Kittens","Puppies","Tower","Stuff"]
-medium = ["California","Netherlands","United Kingdom","Gelatinous","Garbage Can","Olive Branch"]
-hard = ["Xeroderma Pigmentosum","Canis Familiaris","Hypochondriac","Melancholy","Panthera leo"]
+easy = []
+medium = []
+hard = []
+print("Building word-lists...(Might take a while)")
+with open("/usr/share/dict/words") as f:
+    words = f.readlines()
+    for i in range(0,len(words)):
+        words[i] = words[i].strip("\n")
+        if 3 <= len(words[i]) < 8: easy.append(words[i])
+        if 8 <= len(words[i]) < 12: medium.append(words[i])
+        if 12 <= len(words[i]): hard.append(words[i])
 wrong = 0
 hanger = ['''
     -------
@@ -98,13 +107,18 @@ if difficulty == 3:
     n = random.randint(0,len(hard)-1)
     answer = hard[n]
 
+remaining = len(answer)
+
 for i in range(0,len(answer)):
     if answer[i].lower() in alphabet: working += "_"
-    else: working += " "
+    else:
+        working += answer[i]
+        remaining -= 1
 
 while True:
     print(str(hanger[wrong]))
     print(str(working[0:]))
+    print("There are {0} letters left in the word.".format(remaining))
     if wrong > 0:
         print("You have used the following letters: ")
         print(used)
@@ -129,6 +143,7 @@ while True:
                 working = list(working)
                 working[i] = answer[i]
                 working = "".join(working)
+                remaining -= 1
     else:
         print("Sorry! That's not right!")
         wrong += 1
