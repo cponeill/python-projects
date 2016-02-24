@@ -13,14 +13,13 @@ working = ""
 easy = []
 medium = []
 hard = []
-print("Building word-lists...(Might take a while)")
 with open("/usr/share/dict/words") as f:
     words = f.readlines()
     for i in range(0,len(words)):
         words[i] = words[i].strip("\n")
-        if 3 <= len(words[i]) < 8: easy.append(words[i])
+        if 3 <= len(words[i]) < 8: hard.append(words[i])
         if 8 <= len(words[i]) < 12: medium.append(words[i])
-        if 12 <= len(words[i]): hard.append(words[i])
+        if 12 <= len(words[i]): easy.append(words[i])
 wrong = 0
 hanger = ['''
     -------
