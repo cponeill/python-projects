@@ -2,11 +2,9 @@
 # -*- coding: utf-8 -*-
 #Copyright 2016
 #Python Hangman game
-#Assumes you are using a Linux system and you have a dictionary at /usr/share/dict/words
-#Works in Python 2.x as well as 3.x
 
 import random, sys
-if sys.version_info >= (3,0):#Forwards compatibility :P
+if sys.version_info >= (3,0):
     raw_input = input
 
 alphabet = "abcdefghijklmnopqrstuvwxyz"
@@ -46,8 +44,17 @@ hanger = ['''
     -------
     |     |
     O     |
-   /|     |
+    |     |
+    |     |
           |
+          |
+    ---------
+''','''
+    -------
+    |     |
+    O     |
+   /|     |
+    |     |
           |
           |
     ---------
@@ -56,7 +63,7 @@ hanger = ['''
     |     |
     O     |
    /|\    |
-          |
+    |     |
           |
           |
     ---------
@@ -96,16 +103,22 @@ while True:
     except ValueError:
         print("Please select a valid option.")
         continue
-
-if difficulty == 1:
-    n = random.randint(0,len(easy)-1)
-    answer = easy[n]
-if difficulty == 2:
-    n = random.randint(0,len(medium)-1)
-    answer = medium[n]
-if difficulty == 3:
-    n = random.randint(0,len(hard)-1)
-    answer = hard[n]
+while True:
+    if difficulty == 1:
+        n = random.randint(0,len(easy)-1)
+        answer = easy[n]
+        if answer[0] not in alphabet: continue
+        else: break
+    if difficulty == 2:
+        n = random.randint(0,len(medium)-1)
+        answer = medium[n]
+        if answer[0] not in alphabet: continue
+        else: break
+    if difficulty == 3:
+        n = random.randint(0,len(hard)-1)
+        answer = hard[n]
+        if answer[0] not in alphabet: continue
+        else: break
 
 remaining = len(answer)
 
@@ -123,7 +136,7 @@ while True:
         print("You have used the following letters: ")
         print(used)
         print("\n")
-    if wrong == 5:
+    if wrong == len(hanger)-1:
         print("Sorry! The answer was {0}".format(answer))
         exit()
     guess = raw_input("\nGuess a letter: ")
