@@ -145,7 +145,7 @@ while True:
     if guess.lower() not in alphabet:
         print("Please select a real letter!")
         continue
-    if guess in used:
+    if guess.upper() in used:
         print("You've already guessed that!")
         continue
     used += "{0}, ".format(guess.upper())
