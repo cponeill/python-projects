@@ -1,0 +1,234 @@
+Hi there! Welcome to the Python Projects folder!
+
+Throughout these projects, you will be learning how to use the
+Python programming language to create simple, command-line
+operated Python scripts.
+
+However, it would benefit you to learn some of the basics of how the
+Python language works. This document will be the first chapter of lessons,
+and it will help you in solving some of the first challenges.
+
+Python is a powerful and extensible language that is easy for most
+to learn, even if they are not technically inclined. Being an interpreted
+language, you do not have to worry about compilers and other resources
+when creating a Python program, so it is easily portable between
+different systems.
+
+In this guide, you will see lines beginning with `>>>`.
+Usually, if you were to enter the Python interpreter directly by
+invoking the `python` command from a terminal, the `>>>` would represent
+INPUT from you into the interpreter. However, I will be using it in this
+guide to represent OUTPUT from an example script above it.
+
+When creating a Python script, it is important to remember the `.py`
+file extensions. Without this, your text editor will not know to
+highlight syntax accordingly. Syntax highlighting helps you to see
+if you made a mistake or not. Let's get started....
+
+The easiest thing to do in Python is output text to the terminal:
+
+print "Hello World"
+
+The `print` command is a predefined, or built-in, function in Python.
+As such, it will be highlighted for you in the text editor. Keep in
+mind that Python is case-sensitive. So, typing `print` will work,
+but `Print` will not.
+
+We enclosed what we wanted to show up on the terminal in double quotes.
+This tells the interpreter to process that data as a STR type object.
+Object types come in handy later, so keep it in mind.
+
+When defining a single line string, you can use either single- or
+double-quotes:
+
+print "Hello 'person' there!"
+>>>Hello 'person' there!
+
+print 'He said "hello" to a stranger.'
+>>>He said "hello" to a stranger.
+
+You see that you can alternate the type of quotes to print different
+literal characters. Pretty easy, right?
+To print a multi-line string, use a set of three single-quotes at the
+beginning and end of the data:
+
+print '''This
+is
+a
+multi-line
+string'''
+>>>This
+>>>is
+>>>a
+>>>multi-line
+>>>string
+
+While enclosed within that set of triple-quote marks, you can use any
+combination of single- or double-quote characters and they will be
+printed literally.
+
+If you want to keep track of what you are doing, you can use
+comments to add documentation. Comments are denoted by a leading
+`#` character:
+
+print "This is a line"
+#print "This line was commented out to not show up"
+print "End of script" #This is the end
+>>>This is a line
+>>>End of script
+
+The line beginning with a `#` was completely ignored, and the line
+with the `#` at the end processed everything before `#` character.
+
+So, you've read a lot about how to put information OUT. What if you want
+to get some information in?
+
+Before we talk about gathering user input, we need to discuss a piece of
+Python scripts known as variables. In mathematics, variables are used when
+we don't know the value of something, or when the value of something can
+change. In Python, variables are pretty much the same. To define a variable,
+you simply need to name it and give it a value. Variable names are, like
+everything else in Python, case-sensitive. They can be a mix of letters and
+numbers, but they MUST start with a letter.
+
+a = 2
+b = "This is a string"
+print a
+print b
+a += 1
+print a
+>>>2
+>>>This is a string
+>>>3
+
+Now, what we did there was create two variables, `a` and `b`. Since we
+assigned a value of `2` to `a`, it was assumed to be an integer and was
+applied the type of INT. Because `b` contained a string, it was stored as
+a STR type. Again, we will be using types later on.
+
+If a variable is of the INT or FLOAT type, you are able to preform
+mathematical operations on it. For example, when we did `a += 1`, we
+essentially redefined the value of `a` by doing a shorthand for
+`a = a + 1`. You can do similar shorthand with the other arithmetic
+operations:
+
+a += 1 #Addition
+a -= 1 #Subtraction
+a *= 1 #Multiplication
+a /= 1 #Division
+
+String variables can also be added to each other, but only if both variables
+are of the STR type:
+
+a = "Part A"
+b = "Part B"
+c = 3
+print a + b
+print b + a
+print a + c
+>>>Part APart B
+>>>Part BPart A
+>>>TypeError: cannot concatenate 'str' and 'int' objects
+
+See? Trying to add a STR and an INT causes an error. So, what do you do
+if you want to print numbers and strings together? You can use the
+format() method of the STR object type.
+
+age = 85
+name = "Harold"
+print "My name is {0} and I am {1} years old.".format(name, age)
+>>>My name is Harold and I am 85 years old.
+
+Certain object types have commands that can be issued on them. These are
+called methods. The format() method scans a STR object for keys. Keys
+are in the form of {n}, where n is a number, starting at zero, and counting
+up for however many keys are included. In the example above, we put the
+variables `name` and `age` inside the parenthesis in the order that we
+wanted them to appear in the string.
+
+Now, we can start talking about collecting input from the user. After all,
+a program is no fun if there's no interaction, right?
+
+name = raw_input("What is your name? ")
+age = int(raw_input("What is your age? "))
+print "Your name is {0} and you are {1} years old.".format(name, age)
+>>>What is your name?
+<<<Harold
+>>>What is your age?
+<<<85
+>>>"Your name is Harold and you are 85 years old."
+
+We see here that you can use the raw_input() built-in to ask for user input.
+We also used the int() built-in to force the INT type on the age input.
+However, what if you didn't put a number into the age part in the
+script above?
+
+>>>What is your name?
+<<<Harold
+>>>What is your age?
+<<<<eighty-five
+>>>ValueError: invalid literal for int() with base 10: 'eighty-five'
+
+Uh-Oh! That's a problem. In order to make sure that the right type of data
+is collected, we have to start using some techniques known as flow control.
+There are a few different types of flow control, but take a look at the
+following example for a start:
+
+name = raw_input("What is your name? ")
+while True:
+    try:
+        age = int(raw_input("What is your age? "))
+        break
+    except ValueError:
+        print "Please input a valid numeral age!"
+        continue
+print "Your name is {0} and you are {1} years old.".format(name, age)
+>>>What is your name?
+<<<Harold
+>>>What is your age?
+<<<eighty-five
+>>>Please input a valid numeral age!
+>>>What is your age?
+<<<85
+>>>Your name is Harold and you are 85 years old.
+
+In that example, we used two different flow control operators. We used
+`while` and `try/except`. The `while` control tells the system to repeat
+a block of commands until it receives a `break` controller or the condition
+of the `while` block becomes no longer true. The `try/except` control tells
+the system to try something, but do something else if a specific error is
+returned. In this case, the block under `while` would repeat indefinitely
+until you submitted valid input.
+
+What's with that white-space, though? Python was developed to be easy to
+read. As such, instead of using braces and other symbols to denote blocks
+the way other languages do, Python uses dynamic white-space.
+
+Sound confusing? It's simpler than it sounds. Each time you start a new
+block with some type of flow control, you need to end the conditional
+line with a `:` and start each line under that block with an increased
+indentation of 4 spaces. Like this:
+
+a = 1
+while a < 2:
+    ask = raw_input("Type 'yes' to end this block: ")
+    if ask == 'yes':
+        a += 1
+    else:
+        ask2 = raw_input("Python is pretty easy, right? "
+        if ask2 == 'no' or ask2 == 'No':
+            print "I think you're lying!"
+        else:
+            print "This line had to be indented 12 spaces!"
+>>>Type 'yes' to end this block:
+<<<adljlkdjfglsajdggl
+>>>Python is pretty easy, right?
+<<<No
+>>>I think you're lying!
+>>>Type 'yes' to end this block:
+......
+
+You guys get it, right?
+
+That's enough for this first chapter! I hope that you are able to now
+pass the first few challenges. Just look at them and see!
