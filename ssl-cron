@@ -1,0 +1,23 @@
+#!/usr/bin/env python
+#File for updating all SSL certificates every 75 days
+
+from os import path
+from subprocess import call
+
+t = path.getmtime
+
+call(['touch','/tmp/now'])
+
+a = t('/tmp/now')
+b = t('/tmp/sslfile')
+c = a-b
+d = int(c/(60 * 60 * 24))
+
+if c > (60 * 60 * 24 * 75):
+    call(['rm','/tmp/now','/tmp/sslfile'])
+    call(['ssl-renew'])
+    call(['touch','/tmp/sslfile'])
+    print("Your certificates have been renewed!")
+else:
+    call(['rm','/tmp/now'])
+    print("It has only been {0} days since your last renew.".format(d))
