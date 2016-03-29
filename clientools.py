@@ -69,7 +69,7 @@ def add(cliname):
         # following line enables the CGI configuration for this host only
         # after it has been globally disabled with "a2disconf".
         #Include conf-available/serve-cgi-bin.conf
-</VirtualHost>'''.format(cliname,cliemail)
+</VirtualHost>\n\n'''.format(cliname,cliemail) #Needed to add newlines so that Let's Encrypt could work correctly
 
     confloc = "/etc/apache2/sites-available/{0}.conf".format(cliname)
 
