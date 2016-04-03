@@ -1,23 +1,122 @@
 #!/usr/bin/env python
-#File for updating all SSL certificates every 75 days
 
-from os import path
+#Save this file as /opt/cronssl and set it to executable
+
+import os
+import sys
 from subprocess import call
 
-t = path.getmtime
+if sys.version_info < (3,0): input = raw_input
 
-call(['touch','/tmp/now'])
+sf = "/opt/cronssl_settings.txt"
+tf = "/tmp/datetester"
 
-a = t('/tmp/now')
-b = t('/tmp/sslfile')
-c = a-b
-d = int(c/(60 * 60 * 24))
+if not os.geteuid() == 0:
+    print("You must be root or run this as sudo!")
+    exit(1)
 
-if c > (60 * 60 * 24 * 75):
-    call(['rm','/tmp/now','/tmp/sslfile'])
-    call(['ssl-renew'])
-    call(['touch','/tmp/sslfile'])
-    print("Your certificates have been renewed!")
-else:
-    call(['rm','/tmp/now'])
-    print("It has only been {0} days since your last renew.".format(d))
+if not os.path.exists(sf):
+    command = ''
+
+    while True:
+        lepath1 = input("Path to Let's Encrypt: ")
+        lepath2 = lepath1 + "/letsencrypt-auto"
+        if os.path.exists(lepath2):
+            command += lepath2
+            break
+        else: print("Incorrect path!"); continue
+
+    while True:
+        try:
+            letype = int(input("Apache(1) or Webroot(2): "))
+        except TypeError:
+            print("Please enter just a 1 or 2!")
+            continue
+        if letype == 1:
+            command += ' --apache --renew-by-default --server https://acme-v01.api.letsencrypt.org/directory'
+            while True:
+                try:
+                    redir = input("Would you like to force HTTPS? (Y/N): ").lower()
+                except TypeError:
+                    print("Please enter just 'y' or 'n'.")
+                if redir == 'y': command += ' --redirect'; break
+                elif redir == 'n': command += ' --no-redirect'; break
+                else: print("Please enter just 'y' or 'n'.")
+            break
+
+        elif letype == 2:
+            wrpath = input("Webroot path: ")
+            command += ' --webroot -w ' + wrpath + ' --renew-by-default --server https://acme-v01.api.letsencrypt.org/directory'
+            break
+        else:
+            print("Please enter just a 1 or 2!")
+
+    while True:
+        try:
+            ledomain = input("Domain to add (CTRL^C to finish): ")
+            command += ' -d ' + ledomain
+        except KeyboardInterrupt:
+            break
+
+    with open(sf,'a') as f:
+        f.write(command)
+		
+    while True:
+        try:
+            ledays = int(input("How many days do you want to wait until renew: "))
+        except TypeError:
+            print("Please enter a valid number between 1 and 89!")
+        if not 0 < ledays < 90:
+            print("Please enter a valid number between 1 and 89!")
+            continue
+        else: break
+		
+    with open(sf,'a') as f: f.write(str(ledays))
+    while True:
+        try:
+            hr = int(input("What hour (24-hour format) of each day do you want to run: "))
+        except TypeError:
+            print("Please enter a valid number from 0 to 23.")
+            continue
+        if not -1 < hr < 24:
+            print("Please enter a valid number from 0 to 23.")
+            continue
+        else:
+            break
+    while True:
+        try:
+            min = int(input("What minute of that hour: ")
+        except TypeError:
+            print("Please enter a valid number from 0 to 59.")
+            continue
+        if not -1 < min < 60:
+            print("Please enter a valid number from 0 to 59")
+            continue
+        else:
+            break
+			
+    crontext = '''
+    PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:$PATH
+    {0} {1} * * * /opt/cronssl'''.format(min,hr)
+    with open('/etc/cron.d/pyssl','w') as f: f.write(crontext)
+    os.system(command)
+
+with open(sf) as f:
+    settings = f.readlines()
+
+command = settings[0]
+days = int(settings[1])
+
+	
+call(['touch',tf])
+
+a = os.path.getmtime(tf)
+b = os.path.getmtime(sf)
+c = a - b
+call(['rm',tf])
+
+if c < (60 * 60 * 24 * days):
+    exit(0)
+
+call(['touch',sf])
+os.system(command)
