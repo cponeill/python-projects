@@ -5,11 +5,10 @@
 #People can SSH into this user at your host and play games
 #Requirements: Python Colorama, gnu screen, and bsdgames
 
-#Right now, it's kind of broken because of my exit statements. I'll improve it using a 'while' loop so that if something
-#goes wrong in making or joining a game, it returns you to the original menu instead of closing the connection.
 
 from subprocess import call
 import os
+import sys
 from hashlib import md5
 from colorama import Fore, Back, Style, init
 init()
@@ -18,52 +17,53 @@ if sys.version_info >= (3,0): raw_input = input
 
 if not os.path.exists("/tmp/monop"): call(['mkdir','/tmp/monop'])
 
-print("Current games:")
-gamelist = os.listdir("/tmp/monop/")
+while True:
+    print("Current games:")
+    gamelist = os.listdir("/tmp/monop/")
 
-if len(gamelist) == 0:
-    print("No current games!")
-elif len(gamelist) == 1:
-    print gamelist[0]
-else:
-    for i in range(0,len(gamelist)):
-         if i % 2 == 0:
-            gamelist[i] = Fore.YELLOW + Back.BLUE + Style.BRIGHT + gamelist[i] + Style.RESET_ALL
-         else:
-            gamelist[i] = Fore.YELLOW + Back.RED + Style.BRIGHT + gamelist[i] + Style.RESET_ALL
-            x = 0
-            line = ""
-            for i in gamelist:
-                x+=1
-                line += "%s   " % i
-                if not x%4:
-                    line += "\n"
-    print line
-monop = raw_input("New game(N) or Join Game(J)? ").upper()
-if monop == "N":
-    name = raw_input("Game name: ").strip(' ')
-    if not name.isalnum():
-        print("Please only use alphanumeric names!")
-        exit(0)
-    fn = "/tmp/monop/{0}".format(name)
-    if os.path.exists(fn):
-       print("That name is already taken!")
-       exit(0)
-    password = md5(raw_input("Password: ")).hexdigest()
-    with open(fn,'w') as f:
-         f.write(password)
-    call(['screen','-m','-S',name,'monop'])
-    call(['rm',fn])
-if monop == "J":
-    name = raw_input("Game to join: ")
-    fn = "/tmp/monop/{0}".format(name)
-    if not os.path.exists(fn):
-        print("No game with that name!")
-        exit(0)
-    with open(fn) as f: real = f.readlines()
-    password = md5(raw_input("Password: ")).hexdigest()
-    if password != real[0]:
-         print("Incorrect password!")
-         exit(1)
-    call(['screen','-x',name])
-    call(['rm',fn])
+    if len(gamelist) == 0:
+        print("No current games!")
+    elif len(gamelist) == 1:
+        print gamelist[0]
+    else:
+        for i in range(0,len(gamelist)):
+             if i % 2 == 0:
+                gamelist[i] = Fore.YELLOW + Back.BLUE + Style.BRIGHT + gamelist[i] + Style.RESET_ALL
+             else:
+                gamelist[i] = Fore.YELLOW + Back.RED + Style.BRIGHT + gamelist[i] + Style.RESET_ALL
+                x = 0
+                line = ""
+                for i in gamelist:
+                    x+=1
+                    line += "%s   " % i
+                    if not x%4:
+                        line += "\n"
+        print line
+    monop = raw_input("New game(N) or Join Game(J)? ").upper()
+    if monop == "N":
+        name = raw_input("Game name: ").strip(' ')
+        if not name.isalnum():
+            print("Please only use alphanumeric names!")
+        else:
+            fn = "/tmp/monop/{0}".format(name)
+            if os.path.exists(fn):
+                print("That name is already taken!")
+            else:
+                password = md5(raw_input("Password: ")).hexdigest()
+                with open(fn,'w') as f:
+                    f.write(password)
+                call(['screen','-m','-S',name,'monop'])
+                call(['rm',fn])
+    if monop == "J":
+        name = raw_input("Game to join: ")
+        fn = "/tmp/monop/{0}".format(name)
+        if not os.path.exists(fn):
+            print("No game with that name!")
+        else:
+            with open(fn) as f: real = f.readlines()
+            password = md5(raw_input("Password: ")).hexdigest()
+            if password != real[0]:
+                print("Incorrect password!")
+            else:
+                call(['screen','-x',name])
+                call(['rm',fn])
