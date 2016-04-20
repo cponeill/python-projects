@@ -5,6 +5,9 @@
 #People can SSH into this user at your host and play games
 #Requirements: Python Colorama, gnu screen, and bsdgames
 
+#Example entry in /etc/passwd:
+#monopgame:x:1003:1003:,,,:/home/monopgame:/opt/monopmanager
+
 
 from subprocess import call
 import os
