@@ -2,10 +2,17 @@
 #Copyright 2016
 #Currently only supports two polynomials, planning on adding support for a user-defined number of polynomials.
 
+#!/usr/bin/env python
+
 import math, numpy
 
 expo = int(raw_input("Highest exponent: "))
-loop = expo+1
+
+if expo < 1:
+    print("Seriosly, dude? Just do it yourself.")
+    exit()
+
+loop = int(expo+1)
 
 poly1 = []
 poly2 = []
@@ -31,11 +38,12 @@ for i in range(0,len(poly1)):
 
 #split list into rows
 magic = lambda product, n=expo+1: [product[i:i+n] for i in range(0, len(product), n)]
-rows = magic(product)
+new = magic(product)
 
+#final.append(product[0])
 #create diagonals with numpy, add them to list, AKA more magic
-diags = numpy.array(rows)
-n=len(diags)
+board = numpy.array(new)
+n=len(board)
 def diag_sum(i,b):
     s = 0
     if i >= 0:
@@ -52,26 +60,26 @@ def diag_sum(i,b):
     return s
 
 almost = [diag_sum(i,b)
-       for b in (diags, diags[::-1])
+       for b in (board, board[::-1])
        for i in range(-n+1, n)]
 final = almost[len(almost)/2:]
-#The way this diagonal sum thing works prints out two sets of sums going in different directions, we only want the second half.
 
 #Okay, now I have to get into funny strings and stuff to make it look good
 
 newex = expo*2
-result = ''
-if final[0] != 0: result += "{0}x^{1}".format(final[0],newex)
+
+if final[0] == 0: result = ''
+elif final[0] == 1: result = "x^{0}".format(newex)
+else: result = "{0}x^{1}".format(final[0],newex)
 
 for i in range(1, len(final)-1):
     curex = newex - i
-    result += " + {0}x^{1}".format(final[i],curex)
+    if final[i] == 1: result += " + x^{0}".format(curex)
+    elif final[i] != 0: result += " + {0}x^{1}".format(final[i],curex)
 
 if final[-1] != 0: result += " + {0}".format(final[-1])
 
-#Made things look better by removing terms with 0 coefficients. However, this could lead to a leading " + ". Let's get rid of that.
-if final[0] == 0: result = result[3:]
-if final[-1] == 0: result = result[:-3]
+if result == '': result = "0"
 
 print "Your result is: "
-print result
+print result.replace(" + -"," - ")
