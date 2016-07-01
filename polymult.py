@@ -2,8 +2,6 @@
 #Copyright 2016
 #Currently only supports two polynomials, planning on adding support for a user-defined number of polynomials.
 
-#!/usr/bin/env python
-
 import math, numpy
 
 expo = int(raw_input("Highest exponent: "))
