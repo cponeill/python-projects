@@ -26,7 +26,7 @@ def ssh():
     for i in range(0,12):
         y = chars[randint(0,n)]
         passwd += str(y)
-    subprocess.Popen(['addjail',user,passwd])
+    subprocess.Popen(['sudo','addjail',user,passwd])
     return "Your login information:\nHost: 21.browntech.space\nPort: 2422\nUsername: {0}\nPassword: {1}".format(user,passwd)
 
 @app.route('/manifest')
